@@ -37,8 +37,10 @@ def openface_feature_process(face_feature_input_path,pose_feature_input_path,fac
         final_df=final_face_df.join(final_pose_df)
         final_df.to_csv(final_feature_path+'/'+csv_file,index=0)
 
-face_feature_input_path="./dataset/OpenFace"
-openface_feature_process("F:/DaiSEE/OpenFaceData/OpenFaceTrain")
+face_feature_input_path="F:/DaiSEE/OpenFaceData/Train"
+pose_feature_input_path="F:/DaiSEE/AlphaPoseData/Train"
+final_feature_path="F:/DaiSEE/FinalFeature/Train"
+openface_feature_process(face_feature_input_path,face_feature_input_path,face_index_array,pose_index_array,final_feature_path)
 
 
 

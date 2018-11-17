@@ -17,6 +17,7 @@ face_index_array=[' gaze_0_x',' gaze_0_y',' gaze_0_z',' gaze_1_x',' gaze_1_y',' 
 
 pose_index_array=['Nose_x','Nose_y','Neck_x','Neck_y','RShoulder_x','RShoulder_y','RElbow_x','RElbow_y','RWrist_x',
                   'RWrist_y','LShoulder_x','LShoulder_y','LElbow_x','LElbow_y','LWrist_x','LWrist_y']
+
 def openface_feature_process(face_feature_input_path,pose_feature_input_path,face_index_array,pose_index_array,
                              final_feature_path):
     '''
@@ -25,22 +26,24 @@ def openface_feature_process(face_feature_input_path,pose_feature_input_path,fac
     :return:
     '''
     for csv_file in os.listdir(face_feature_input_path):
-        df_face=pd.read_csv(face_feature_input_path+'/'+csv_file)
+        df_face = pd.read_csv(face_feature_input_path + '/' +csv_file)
         df_pose = pd.read_csv(pose_feature_input_path + '/' + csv_file)
         #合成新的眼睛特征
         df_face[' eye_0_distace'] = df_face[' eye_lmk_Y_17'] - df_face[' eye_lmk_Y_11']
         df_face[' eye_1_distace'] = df_face[' eye_lmk_Y_45'] - df_face[' eye_lmk_Y_39']
-        new_face_index=df_face.reindex(columns=face_index_array)
+        new_face_index=df_face.reindex(columns=face_index_array,fill_value=0)
         final_face_df = new_face_index.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
-        new_pose_index = df_pose.reindex(columns=pose_index_array)
+        new_pose_index = df_pose.reindex(columns=pose_index_array,fill_value=0)
         final_pose_df = new_pose_index.apply(lambda x: (x - np.min(x)) / (np.max(x) - np.min(x)))
         final_df=final_face_df.join(final_pose_df)
+        final_df.fillna(0,inplace=True)
         final_df.to_csv(final_feature_path+'/'+csv_file,index=0)
 
-face_feature_input_path="F:/DaiSEE/OpenFaceData/Train"
-pose_feature_input_path="F:/DaiSEE/AlphaPoseData/Train"
-final_feature_path="F:/DaiSEE/FinalFeature/Train"
-openface_feature_process(face_feature_input_path,face_feature_input_path,face_index_array,pose_index_array,final_feature_path)
+face_feature_input_path="F:/DaiSEE/OpenFaceData/Validation"
+pose_feature_input_path="F:/DaiSEE/AlphaPoseData/Validation"
+final_feature_path="F:/DaiSEE/FinalFeature/Validation"
+openface_feature_process(face_feature_input_path,pose_feature_input_path,face_index_array,pose_index_array,
+                         final_feature_path)
 
 
 
